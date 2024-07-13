@@ -1,17 +1,10 @@
 import express from 'express';
-import cors from 'cors';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configurer CORS pour accepter les requêtes de partout
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
 
 // Configurer Swagger
 const swaggerOptions = {
