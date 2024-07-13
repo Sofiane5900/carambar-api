@@ -6,14 +6,11 @@ import cors from 'cors';
 const app = express();
 const port = process.env.PORT || 3000;
 
-<<<<<<< HEAD
-=======
 // Enable CORS
 app.use(cors());
 
 // Middlewares
 app.use(express.json());
->>>>>>> fix
 
 // Configurer Swagger
 const swaggerOptions = {
