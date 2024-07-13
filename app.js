@@ -1,50 +1,57 @@
 import express from 'express';
-import { Sequelize } from 'sequelize';
-import jokeRoutes from './routes/jokeRoutes.js';
-import swaggerJsDoc from 'swagger-jsdoc';
+import cors from 'cors';
+import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middlewares
-app.use(express.json());
+// Configurer CORS pour accepter les requêtes de partout
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
-// Swagger configuration
+// Configurer Swagger
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
-      title: 'Jokes API',
+      title: 'Carambar API',
       version: '1.0.0',
-      description: 'A simple API to manage jokes',
+      description: 'API pour les blagues Carambar',
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: `http://localhost:${port}`, // Modifier si nécessaire pour le déploiement
+        description: 'Development server',
+      },
+      {
+        url: 'https://carambar-api-9cle.onrender.com',
+        description: 'Production server',
       },
     ],
   },
-  apis: ['./routes/*.js'],
+  apis: ['./routes/*.js'], // Chemin vers tes fichiers de routes
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Routes
-app.use('/api', jokeRoutes);
+// Autres configurations d'Express (middlewares, routes, etc.)
 
-// Database connection and sync
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './database.sqlite',
+// Exemple de route pour récupérer toutes les blagues
+app.get('/api/jokes', async (req, res) => {
+  try {
+    // Code pour récupérer les blagues depuis la base de données
+    const jokes = await Joke.findAll();
+    res.status(200).json(jokes);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération des blagues.' });
+  }
 });
 
-sequelize.sync({ force: true }).then(() => {
-  console.log('Database & tables created!');
-});
-
-// Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
