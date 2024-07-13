@@ -42,6 +42,7 @@ import { Sequelize, DataTypes } from 'sequelize';
 export async function seedDatabase() {
   try {
     await sequelize.sync({ force: true }); // Synchronise ou recrée toutes les tables
+    await Joke.truncate(); // Vide la table Joke
     await Joke.bulkCreate(jokesData); // Insère les données de seed dans la table Joke
     console.log('Base de données peuplée avec succès !');
   } catch (error) {
