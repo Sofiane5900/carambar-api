@@ -33,7 +33,6 @@ export async function seedDatabase() {
   try {
     await sequelize.sync({ force: true }); // Synchronise et recrée toutes les tables
     await Joke.bulkCreate(jokesData.map(content => ({ content }))); // Insère les données de seed dans la table Joke
-    console.log('Base de données synchronisée et peuplée avec succès !');
   } catch (error) {
     console.error('Erreur lors du peuplement de la base de données :', error);
   } finally {

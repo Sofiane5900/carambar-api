@@ -71,6 +71,6 @@ router.get('/jokes/:id', jokeController.getJokeById);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/jokes/random', jokeController.getRandomJoke);
+router.get('/jokesrandom', jokeController.getRandomJoke);
 
 export default router;

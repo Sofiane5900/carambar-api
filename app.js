@@ -54,16 +54,6 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Exemple de route pour récupérer toutes les blagues
-app.get('/api/jokes', async (req, res) => {
-  try {
-    const jokes = await Joke.findAll();
-    res.status(200).json(jokes);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération des blagues.' });
-  }
-});
-
 // Fonction pour démarrer l'application
 async function startApp() {
   try {
@@ -79,4 +69,51 @@ async function startApp() {
   }
 }
 
+// Je lance le serveur
 startApp();
+
+// Exemple de route pour récupérer toutes les blagues
+app.get('/api/jokes', async (req, res) => {
+  try {
+    const jokes = await Joke.findAll();
+    res.status(200).json(jokes);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération des blagues.' });
+  }
+});
+
+// Exemple de route pour ajouter une blague
+app.post('/api/jokes', async (req, res) => {
+  try {
+    const joke = await Joke.create(req.body);
+    res.status(201).json(joke);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la création de la blague.' });
+  }
+});
+
+// Exemple de route pour récupérer une blague par son ID
+app.get('/api/jokes/:id', async (req, res) => {
+  try {
+    const joke = await Joke.findByPk(req.params.id);
+    if (!joke) {
+      res.status(404).json({ error: 'Blague non trouvée.' });
+    } else {
+      res.status(200).json(joke);
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération de la blague.' });
+  }
+});
+
+// Exemple de route pour avoir une blague aléatoire
+app.get('/api/jokesrandom', async (req, res) => {
+  try {
+    const joke = await Joke.findOne({ order: sequelize.random() });
+    res.status(200).json(joke);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération de la blague.' });
+  }
+});
+
+
