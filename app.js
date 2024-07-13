@@ -3,9 +3,13 @@ import { Sequelize } from 'sequelize';
 import jokeRoutes from './routes/jokeRoutes.js';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import cors from 'cors';
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Enable CORS
+app.use(cors());
 
 // Middlewares
 app.use(express.json());
