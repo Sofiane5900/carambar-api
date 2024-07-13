@@ -23,7 +23,12 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: `http://localhost:${port}`,
+        description: 'Development server',
+      },
+      {
+        url: 'https://carambar-api-9cle.onrender.com',
+        description: 'Production server',
       },
     ],
   },
