@@ -28,6 +28,8 @@ import { Sequelize, DataTypes } from 'sequelize';
     "Quel est le comble pour un joueur de bowling ? C’est de perdre la boule"
   ];
 
+
+
   for (const jokeContent of jokes) {
     await Joke.create({ content: jokeContent });
   }
@@ -35,3 +37,16 @@ import { Sequelize, DataTypes } from 'sequelize';
   console.log('Jokes seeded!');
   process.exit();
 })();
+
+
+export async function seedDatabase() {
+  try {
+    await sequelize.sync({ force: true }); // Synchronise ou recrée toutes les tables
+    await Joke.bulkCreate(jokesData); // Insère les données de seed dans la table Joke
+    console.log('Base de données peuplée avec succès !');
+  } catch (error) {
+    console.error('Erreur lors du peuplement de la base de données :', error);
+  } finally {
+    await sequelize.close(); // Ferme la connexion Sequelize
+  }
+}

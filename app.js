@@ -1,56 +1,52 @@
 import express from 'express';
-import swaggerJsdoc from 'swagger-jsdoc';
+import { Sequelize } from 'sequelize';
+import jokeRoutes from './routes/jokeRoutes.js';
+import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Enable CORS
-app.use(cors());
-
 // Middlewares
+app.use(cors()); // Active CORS
 app.use(express.json());
 
-// Configurer Swagger
+// Swagger configuration
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
-      title: 'Carambar API',
+      title: 'Jokes API',
       version: '1.0.0',
-      description: 'API pour les blagues Carambar',
+      description: 'A simple API to manage jokes',
     },
     servers: [
       {
-        url: `http://localhost:${port}`, // Modifier si nécessaire pour le déploiement
-        description: 'Development server',
-      },
-      {
-        url: 'https://carambar-api-9cle.onrender.com',
-        description: 'Production server',
+        url: 'http://localhost:3000',
       },
     ],
   },
-  apis: ['./routes/*.js'], // Chemin vers tes fichiers de routes
+  apis: ['./routes/*.js'],
 };
 
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Autres configurations d'Express (middlewares, routes, etc.)
+// Routes
+app.use('/api', jokeRoutes);
 
-// Exemple de route pour récupérer toutes les blagues
-app.get('/api/jokes', async (req, res) => {
-  try {
-    // Code pour récupérer les blagues depuis la base de données
-    const jokes = await Joke.findAll();
-    res.status(200).json(jokes);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération des blagues.' });
-  }
+// Database connection and sync
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: './database.sqlite',
 });
 
+sequelize.sync({ force: true }).then(() => {
+  console.log('Database & tables created!');
+});
+
+// Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
